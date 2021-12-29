@@ -83,7 +83,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return Container(
       width: screenWidth,
       height: screenHeight,
-      color: Colors.blueAccent,
+      color: Colors.blue[300],
       child: MouseRegion(
         onHover: _updateLocation,
         child: Align(
