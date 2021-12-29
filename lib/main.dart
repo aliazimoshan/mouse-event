@@ -83,37 +83,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return Container(
       width: screenWidth,
       height: screenHeight,
-      color: Colors.red,
+      color: Colors.blueAccent,
       child: MouseRegion(
-        onEnter: _incrementEnter,
         onHover: _updateLocation,
-        onExit: _incrementExit,
-        child: Stack(
-          children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '$_enterCounter Entries\n$_exitCounter Exits',
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                  Text(
-                    'The cursor is here: (${x.toStringAsFixed(2)}, ${y.toStringAsFixed(2)})',
-                  ),
-                ],
-              ),
+        child: Align(
+          alignment: Alignment(x1, y1),
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
             ),
-            Align(
-              alignment: Alignment(x1, y1),
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: const BoxDecoration(
-                    color: Colors.white, shape: BoxShape.circle),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
