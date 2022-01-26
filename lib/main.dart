@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
       title: _title,
       home: Scaffold(
         //appBar: AppBar(title: const Text(_title)),
+
         body: Center(
           child: MyStatefulWidget(),
         ),
@@ -30,24 +31,13 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _enterCounter = 0;
-  int _exitCounter = 0;
   double x = 0.0;
   double y = 0.0;
   double x1 = 0.0;
   double y1 = 0.0;
-
-  void _incrementEnter(PointerEvent details) {
-    setState(() {
-      _enterCounter++;
-    });
-  }
-
-  void _incrementExit(PointerEvent details) {
-    setState(() {
-      _exitCounter++;
-    });
-  }
+  bool menuHovered = false;
+  String imageUrl =
+      'https://images.unsplash.com/photo-1639669047277-32640a26bdf6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1587&q=80';
 
   void _updateLocation(PointerEvent details) {
     setState(() {
@@ -60,43 +50,71 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    print('screenWidth: $x1');
-    print('screenHeight: $y1');
 
-    pointerWidthConverter() {
+    pointerConverter() {
+      double xTemp = x / screenWidth;
+      double yTemp = y / screenHeight;
+      double xTempPadding = xTemp - (1 - xTemp);
+      double yTempPadding = yTemp - (1 - yTemp);
       setState(() {
-        double temp = x / screenWidth;
-        x1 = temp - (1 - temp);
+        x1 = xTempPadding + (xTempPadding / 15);
+        y1 = yTempPadding + (yTempPadding / 15);
       });
+      if (-0.9 < xTempPadding &&
+          xTempPadding < -0.8 &&
+          -0.9 < yTempPadding &&
+          yTempPadding < -0.8) {
+        setState(() {
+          menuHovered = true;
+        });
+      } else {
+        setState(() {
+          menuHovered = false;
+        });
+      }
     }
 
-    pointerHeightConverter() {
-      setState(() {
-        double temp = y / screenHeight;
-        y1 = temp - (1 - temp);
-      });
-    }
-
-    pointerHeightConverter();
-    pointerWidthConverter();
+    pointerConverter();
 
     return Container(
       width: screenWidth,
       height: screenHeight,
-      color: Colors.blue[300],
-      child: MouseRegion(
-        onHover: _updateLocation,
-        child: Align(
-          alignment: Alignment(x1, y1),
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
+      decoration: BoxDecoration(
+        //color: Colors.black,
+        image: DecorationImage(
+          image: NetworkImage(imageUrl),
+          fit: BoxFit.cover,
+        ),
+      ),
+      alignment: Alignment.center,
+      child: Stack(
+        children: [
+          // ignore: prefer_const_constructors
+          Align(
+            alignment: const Alignment(-0.9, -0.9),
+            child: const Icon(Icons.menu, size: 40, color: Colors.red),
+          ),
+          MouseRegion(
+            onHover: _updateLocation,
+            child: Align(
+              alignment: Alignment(x1, y1),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 100),
+                width: menuHovered ? 60 : 40,
+                height: menuHovered ? 60 : 40,
+                decoration: BoxDecoration(
+                  color: menuHovered
+                      ? Colors.blueGrey.withOpacity(0.7)
+                      : Colors.transparent,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: menuHovered ? Colors.transparent : Colors.red,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
